@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>MCQ Quiz</title>
+  <title>JavaScript MCQ Exam</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -15,18 +15,9 @@
     }
 
     #quizContainer {
-      max-width: 500px;
+      max-width: 700px;
       margin: 50px auto;
-      padding: 20px;
-      background-color: #f7f7f7;
-      border-radius: 5px;
-      box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-    }
-
-    #resultContainer {
-      max-width: 500px;
-      margin: 50px auto;
-      padding: 20px;
+      padding: 50px;
       background-color: #f7f7f7;
       border-radius: 5px;
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
@@ -38,6 +29,19 @@
 
     #choices {
       margin-bottom: 20px;
+    }
+
+    #timer {
+      font-weight: bold;
+    }
+
+    .button-container {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .hidden {
+      display: none;
     }
 
     button {
@@ -52,63 +56,42 @@
     button:hover {
       background-color: #45a049;
     }
-
-    #timer {
-      font-weight: bold;
-    }
-
-    #startButton {
-      display: block;
-      margin: 0 auto;
-    }
-
-    #resultContainer p {
-      margin-bottom: 10px;
-    }
-
-    /* Responsive styles */
-    @media only screen and (max-width: 600px) {
-      #quizContainer,
-      #resultContainer {
-        max-width: 90%;
-      }
-    }
   </style>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script>
     // Define your questions and answers here
     var questions = [
       {
-        question: "What is the capital of France?",
-        choices: ["Paris", "London", "Madrid", "Rome"],
+        question: "What is the output of the following JavaScript code? console.log(2 + '2');",
+        choices: ["4", "22", "NaN", "TypeError"],
+        correctAnswer: 1
+      },
+      {
+        question: "Which built-in method returns the characters in a string beginning at the specified position?",
+        choices: ["getSubstring()", "slice()", "substr()", "substring()"],
+        correctAnswer: 3
+      },
+      {
+        question: "What will be the output of the following JavaScript code?\n\nconsole.log(1 + -'1' + 2 + '2');",
+        choices: ["02", "21", "NaN", "22"],
+        correctAnswer: 1
+      },
+      {
+        question: "Which one of the following is not a valid JavaScript variable name?",
+        choices: ["2myVar", "_myVar", "$myVar", "myVar2"],
         correctAnswer: 0
       },
       {
-        question: "Which programming language is used for web development?",
-        choices: ["JavaScript", "Java", "Python", "C++"],
+        question: "What is the result of the following JavaScript expression?\n\n3 + 2 + '7';",
+        choices: ["57", "12", "37", "Error"],
         correctAnswer: 0
-      },
-      {
-        question: "What is the largest planet in our solar system?",
-        choices: ["Mars", "Jupiter", "Venus", "Saturn"],
-        correctAnswer: 1
-      },
-      {
-        question: "Which country is known as the 'Land of the Rising Sun'?",
-        choices: ["China", "Japan", "South Korea", "Thailand"],
-        correctAnswer: 1
-      },
-      {
-        question: "Which is the highest-grossing film of all time?",
-        choices: ["Avatar", "Avengers: Endgame", "Titanic", "Star Wars: The Force Awakens"],
-        correctAnswer: 1
       }
     ];
 
     var currentQuestion = 0;
     var obtainedMarks = 0;
     var timer;
-    var timeLeft = 600;
+    var timeLeft = 180; // Time in seconds for the exam (3 minutes)
 
     // Function to display the current question
     function displayQuestion() {
@@ -118,8 +101,21 @@
 
       for (var i = 0; i < question.choices.length; i++) {
         var choice = question.choices[i];
-        var radioBtn = '<input type="radio" name="choice" value="' + i + '"> ' + choice + '<br>';
+        var radioBtn = '<input type="radio" name="choice" value="' + i + '"> ' + choice + '<br><br>';
         $("#choices").append(radioBtn);
+      }
+
+      // Show or hide navigation buttons
+      if (currentQuestion === 0) {
+        $("#backButton").hide();
+      } else {
+        $("#backButton").show();
+      }
+
+      if (currentQuestion === questions.length - 1) {
+        $("#nextButton").text("Submit");
+      } else {
+        $("#nextButton").text("Next");
       }
     }
 
@@ -139,47 +135,46 @@
       }
     }
 
-    // Function to start the quiz
-    function startQuiz() {
+    // Function to go back to the previous question
+    function goBack() {
+      currentQuestion--;
+      displayQuestion();
+    }
+
+    // Function to start the exam
+    function startExam() {
       $("#startButton").hide();
       displayQuestion();
       timer = setInterval(updateTimer, 1000);
+      showButtons();
+    }
+
+    // Function to show the navigation buttons
+    function showButtons() {
+      $("#backButton").removeClass("hidden");
+      $("#nextButton").removeClass("hidden");
     }
 
     // Function to update the timer
-    /*function updateTimer() {
+    function updateTimer() {
       if (timeLeft > 0) {
+        var minutes = Math.floor(timeLeft / 60);
+        var seconds = timeLeft % 60;
+
+        var formattedTime =
+          ("0" + minutes).slice(-2) +
+          ":" +
+          ("0" + seconds).slice(-2);
+
+        $("#timer").text("Time Left: " + formattedTime);
         timeLeft--;
-        $("#timer").text("Time Left: " + timeLeft + "s");
       } else {
         clearInterval(timer);
         showResult();
       }
-    }*/
-	// Function to update the timer
-function updateTimer() {
-  if (timeLeft > 0) {
-    var hours = Math.floor(timeLeft / 3600);
-    var minutes = Math.floor((timeLeft % 3600) / 60);
-    var seconds = timeLeft % 60;
+    }
 
-    var formattedTime =
-      ("0" + hours).slice(-2) +
-      ":" +
-      ("0" + minutes).slice(-2) +
-      ":" +
-      ("0" + seconds).slice(-2);
-
-    $("#timer").text("Time Left: " + formattedTime);
-    timeLeft--;
-  } else {
-    clearInterval(timer);
-    showResult();
-  }
-}
-
-
-    // Function to display the result
+    // Function to display the result with correct answers
     function showResult() {
       $("#quizContainer").hide();
       $("#resultContainer").show();
@@ -192,31 +187,37 @@ function updateTimer() {
       for (var i = 0; i < questions.length; i++) {
         var question = questions[i];
         var correctChoice = question.choices[question.correctAnswer];
-        var answer = (i + 1) + ". " + correctChoice;
+        var answer = (i + 1) + ". " + question.question + "<br> Correct Answer: " + correctChoice + "<br><br>";
         answersContainer.append("<p>" + answer + "</p>");
       }
     }
   </script>
 </head>
 <body>
-  <h1>MCQ Quiz</h1>
+  <h1>JavaScript MCQ Exam</h1>
 
   <div id="quizContainer">
     <h3 id="question"></h3>
     <div id="choices"></div>
-    <button onclick="checkAnswer()">Next</button>
-    <br><br>
-    <span id="timer"></span>
-    <br><br>
-    <button id="startButton" onclick="startQuiz()">Start Quiz</button>
+
+    <div class="button-container">
+      <button id="backButton" class="hidden" onclick="goBack()">Back</button>
+      <button id="nextButton" class="hidden" onclick="checkAnswer()">Next</button>
+    </div>
+
+    <div id="timer"></div>
   </div>
 
-  <div id="resultContainer">
-    <h2>Quiz Result</h2>
+  <div id="resultContainer" style="display: none;">
+    <h2>Exam Result</h2>
     <p id="obtainedMarks"></p>
     <p id="totalMarks"></p>
     <h3>Correct Answers:</h3>
     <div id="answers"></div>
+  </div>
+
+  <div class="button-container">
+    <button id="startButton" onclick="startExam()">Start Exam</button>
   </div>
 </body>
 </html>
